@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState } from "react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { ethers } from "ethers";
 
 const networks = {
@@ -23,6 +25,7 @@ const Wallet = () => {
   const [connected, setConnected] = useState(false);
 
   const connectWallet = async () => {
+    console.log("connectWallet function called");
     if (!window.ethereum) {
       console.error("window.ethereum is not available");
       return;
@@ -30,18 +33,13 @@ const Wallet = () => {
 
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
 
-      if (provider.network && provider.network.name !== "matic") {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              ...networks["polygon"],
-            },
-          ],
-        });
+      if (chainId !== networks.polygon.chainId) {
+        toast.warn("Please connect to the Polygon network");
+        return;
       }
 
       const account = provider.getSigner();
@@ -51,7 +49,7 @@ const Wallet = () => {
       const Balance = ethers.utils.formatEther(await account.getBalance());
       setBalance(Balance);
 
-      setConnected(true); // Set the connected state to true
+      setConnected(true);
     } catch (error) {
       console.error("Error connecting wallet: ", error);
     }
