@@ -1,5 +1,6 @@
 import React from 'react';
 import Wallet from './Wallet.js';
+import Link from 'next/link'; 
 
 export default function Navbar() {
     return (
@@ -10,8 +11,9 @@ export default function Navbar() {
             {/* Middle side - Links */}
             <div className="hidden md:flex space-x-4">
                 <a href="#" className="text-white hover:text-blue-200">Home</a>
-                <a href="#" className="text-white hover:text-blue-200">Contact</a>
-                <a href="#" className="text-white hover:text-blue-200">About</a>
+                <Link href="/CreateSession" className="text-white hover:text-blue-200">
+                    Create Session
+                </Link>
             </div>
 
             {/* Right side - Connect Wallet Button */}
